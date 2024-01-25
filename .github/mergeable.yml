@@ -23,7 +23,7 @@ mergeable:
         files:
           pr_diff: true
         must_include:
-          regex: 'config/test.yaml'
+          regex: 'test.yaml'
           message: "No target file found"
     pass:
       - do: merge
