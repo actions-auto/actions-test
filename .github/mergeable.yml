@@ -24,7 +24,7 @@ mergeable:
           pr_diff: true
         must_include:
           regex: 'config/test.yaml'
-          message: "Auto-merging is only enabled for default branch"
+          message: "No target file found"
     pass:
       - do: merge
         merge_method: "squash"
