@@ -19,12 +19,10 @@ mergeable:
           regex:
             - 'master|main'
           message: "Auto-merging is only enabled for default branch"
-      - do: contents
-        files:
-          pr_diff: true
+      - do: changeset
         must_include:
           regex: 'config/test.yaml'
-          message: "No target file found"
+          message: "No target file in changeset found"
     pass:
       - do: merge
         merge_method: "squash"
