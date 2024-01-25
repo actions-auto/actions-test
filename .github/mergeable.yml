@@ -1,6 +1,6 @@
 version: 2
 mergeable:
-  - when: pull_request.*, pull_request_review.*, status.*
+  - when: pull_request.*, pull_request_review.*, status.* , check_run.*
     name: "Automatically merge pull requests once it passes all checks"
     filter:
       - do: and
