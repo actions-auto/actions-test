@@ -1,0 +1,50 @@
+version: 2
+mergeable:
+  - when: pull_request.*, pull_request_review.*, status.*
+    name: "Automatically merge pull requests once it passes all checks"
+    filter:
+      - do: and
+        filter:
+          - do: author
+            must_include:
+              regex: "kirillbilchenko.*"
+          - do: payload
+            pull_request:
+              title:
+                must_include:
+                  regex: "Update slow rollout version"
+    validate:
+      - do: baseRef
+        must_include:
+          regex:
+            - 'master|main'
+          message: "Auto-merging is only enabled for default branch"
+      - do: contents
+        files:
+          pr_diff: true
+        must_include:
+          regex: 'config/test.yaml'
+          message: "Auto-merging is only enabled for default branch"
+    pass:
+      - do: merge
+        merge_method: "squash"
+      - do: checks
+        status: 'success'
+
+  - when: pull_request.*
+    name: "Request review from monolith team when pull request is created manually"
+    validate:
+      - do: author
+        must_exclude:
+          regex: "miroscopedtoken.*"
+      - do: baseRef
+        must_include:
+          regex: "master|main"
+          message: "Check is only enabled for default branch"
+      - do: changeset
+        must_include:
+          regex: "config/production-deployment.yml"
+          message: "Requesting review from monolith team"
+    pass:
+      - do: request_review
+        teams: ["tm_monolith"]
