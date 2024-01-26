@@ -38,9 +38,15 @@ jobs:
           echo Add other actions to build,
           echo test, and deploy your project.
 
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: |
+          echo "$GITHUB_CONTEXT"
+
       - name: Add ci-passed label to PR
         uses: actions/github-script@v7
-        if: github.actor == 'kirillbilchenko'
+        if: github.actor == 'kirillbilchenko' && ${{ github.event_name == 'pull_request' && startsWith(github.event.pull_request.title, 'Slow') }}
         with:
           script: |
             const prNumber = context.payload.pull_request.number;
@@ -52,5 +58,5 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: prNumber,
-              labels: ['ci-passed']
+              labels: ['mergable-ready']
             });
