@@ -8,18 +8,16 @@ mergeable:
           - do: author
             must_include:
               regex: "kirillbilchenko.*"
-          - do: and
-            filter:
-              - do: payload
-                pull_request:
-                  title:
-                    must_include:
-                      regex: "Update slow rollout version"
-              - do: payload
-                pull_request:
-                  labels:
-                    must_include:
-                      regex: "ci-passed"        
+          - do: payload
+            pull_request:
+              title:
+                must_include:
+                  regex: "^Update slow rollout version"
+          - do: payload
+            pull_request:
+              labels:
+                must_include:
+                  regex: "ci-passed"        
     validate:
       - do: and
         validate:
