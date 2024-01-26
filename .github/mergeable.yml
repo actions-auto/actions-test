@@ -1,6 +1,6 @@
 version: 2
 mergeable:
-  - when: pull_request.*, pull_request_review.*, status.* , check_run.*
+  - when: pull_request.*, pull_request_review.*, status.*
     name: "Automatically merge pull requests once it passes all checks"
     filter:
       - do: and
@@ -8,26 +8,46 @@ mergeable:
           - do: author
             must_include:
               regex: "kirillbilchenko.*"
-          - do: payload
-            pull_request:
-              title:
+          - do: and
+            filter:
+              - do: payload
+                pull_request:
+                title:
+                  must_include:
+                    regex: "Update slow rollout version"
+              - do: labels
                 must_include:
-                  regex: "Update slow rollout version"
+                  regex: "ci-passed"        
+    validate:
+      - do: and
+        validate:
+          - do: baseRef
+            must_include:
+              regex:
+                - 'master|main'
+              message: "Auto-merging is only enabled for default branch"
+          - do: changeset
+            must_include:
+              regex: 'config/test.yaml'
+              message: "No target file in changeset found"
+    pass:
+      - do: checks
+        status: 'success'
+      - do: merge
+        merge_method: "squash"
+      
+
+  - when: check_suite.*
+    name: "Add label for ci status"
     validate:
       - do: baseRef
         must_include:
           regex:
             - 'master|main'
-          message: "Auto-merging is only enabled for default branch"
-      - do: changeset
-        must_include:
-          regex: 'config/test.yaml'
-          message: "No target file in changeset found"
     pass:
-      - do: merge
-        merge_method: "squash"
-      - do: checks
-        status: 'success'
+      - do: labels
+        add: "ci-passed"
+    
 
   - when: pull_request.*
     name: "Request review from monolith team when pull request is created manually"
