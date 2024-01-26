@@ -32,28 +32,15 @@ mergeable:
             must_include:
               regex: 'config/test.yaml'
               message: "No target file in changeset found"
+          - do: label
+            must_include:
+              regex: 'ci-passed'
+              message: "No ci-passed label found"
     pass:
       - do: checks
         status: 'success'
       - do: merge
-        merge_method: "squash"
-      
-
-  - when: check_suite.*
-    name: "Add label for ci status"
-    validate:
-      - do: baseRef
-        must_include:
-          regex:
-            - 'master|main'
-    pass:
-      - do: labels
-        add: 'ci-passed'
-      - do: checks
-        status: 'success'
-    fail:
-      - do: checks
-        status: 'faulure'   
+        merge_method: "squash"   
     
 
   - when: pull_request.*
