@@ -8,18 +8,16 @@ mergeable:
           - do: author
             must_include:
               regex: "kirillbilchenko.*"
-          - do: and
-            filter:
-              - do: payload
-                pull_request:
-                  title:
-                    must_include:
-                      regex: "Update slow rollout version"
-              - do: payload
-                pull_request:
-                  labels:
-                    must_include:
-                      regex: "ci-passed"        
+          - do: payload
+            pull_request:
+              title:
+                must_include:
+                  regex: "^Update slow rollout version"
+          - do: payload
+            pull_request:
+              labels:
+                must_include:
+                  regex: "mergable-ready"        
     validate:
       - do: and
         validate:
@@ -34,8 +32,8 @@ mergeable:
               message: "No target file in changeset found"
           - do: label
             must_include:
-              regex: 'ci-passed'
-              message: "No ci-passed label found"
+              regex: 'mergable-ready'
+              message: "No mergable label found"
     pass:
       - do: checks
         status: 'success'
