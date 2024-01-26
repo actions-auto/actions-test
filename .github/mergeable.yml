@@ -3,21 +3,19 @@ mergeable:
   - when: pull_request.*, pull_request_review.*, status.*
     name: "Automatically merge pull requests once it passes all checks"
     filter:
-      - do: and
-        filter:
-          - do: author
+      - do: author
+        must_include:
+          regex: "kirillbilchenko.*"
+      - do: payload
+        pull_request:
+          title:
             must_include:
-              regex: "kirillbilchenko.*"
-          - do: payload
-            pull_request:
-              title:
-                must_include:
-                  regex: "^Update slow rollout version"
-          - do: payload
-            pull_request:
-              labels:
-                must_include:
-                  regex: "ci-passed"        
+              regex: "^Update slow rollout version"
+      - do: payload
+        pull_request:
+          labels:
+            must_include:
+              regex: "mergable-ready"        
     validate:
       - do: and
         validate:
@@ -32,8 +30,8 @@ mergeable:
               message: "No target file in changeset found"
           - do: label
             must_include:
-              regex: 'ci-passed'
-              message: "No ci-passed label found"
+              regex: 'mergable-ready'
+              message: "No mergableg label found"
     pass:
       - do: checks
         status: 'success'
