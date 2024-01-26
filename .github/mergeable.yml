@@ -12,12 +12,14 @@ mergeable:
             filter:
               - do: payload
                 pull_request:
-                title:
-                  must_include:
-                    regex: "Update slow rollout version"
-              - do: labels
-                must_include:
-                  regex: "ci-passed"        
+                  title:
+                    must_include:
+                      regex: "Update slow rollout version"
+              - do: payload
+                pull_request:
+                  labels:
+                    must_include:
+                      regex: "ci-passed"        
     validate:
       - do: and
         validate:
@@ -46,7 +48,12 @@ mergeable:
             - 'master|main'
     pass:
       - do: labels
-        add: "ci-passed"
+        add: 'ci-passed'
+      - do: checks
+        status: 'success'
+    fail:
+      - do: checks
+        status: 'faulure'   
     
 
   - when: pull_request.*
