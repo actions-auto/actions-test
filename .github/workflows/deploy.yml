@@ -1,0 +1,30 @@
+name: Fly Deploy
+on:
+  push:
+    branches:
+      - main
+jobs:
+  # These deploy blocks are essentially identical for this trivial use case,
+  # but this does illustrate usage.
+  # Github deployment protection rules require that an environment is protected.
+  # So, defining a "canary" deployment and environment that is NOT protected by a
+  # rule that is the recommended way to use this
+  deploy_production_canary:
+    name: Deploy Canary
+    runs-on: ubuntu-latest
+    environment:
+      name: "canary"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: superfly/flyctl-actions/setup-flyctl@master
+      - name: Create Sentry release
+        uses: getsentry/action-release@v1
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: ${{ vars.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ vars.SENTRY_PROJECT }}
+          # SENTRY_URL: https://sentry.io/
+        with:
+          environment: canary
+          ignore_empty: true
+
