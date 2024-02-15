@@ -4,11 +4,6 @@ on:
     branches:
       - main
 jobs:
-  # These deploy blocks are essentially identical for this trivial use case,
-  # but this does illustrate usage.
-  # Github deployment protection rules require that an environment is protected.
-  # So, defining a "canary" deployment and environment that is NOT protected by a
-  # rule that is the recommended way to use this
   deploy_production_canary:
     name: Deploy Canary
     runs-on: ubuntu-latest
