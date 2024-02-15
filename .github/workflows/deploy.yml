@@ -4,14 +4,10 @@ on:
     branches:
       - main
 jobs:
-  deploy_production_canary:
+  create_release:
     name: Deploy Canary
     runs-on: ubuntu-latest
-    environment:
-      name: "canary"
     steps:
-      - uses: actions/checkout@v4
-      - uses: superfly/flyctl-actions/setup-flyctl@master
       - name: Create Sentry release
         uses: getsentry/action-release@v1
         env:
@@ -23,3 +19,11 @@ jobs:
           environment: canary
           ignore_empty: true
 
+  deploy_production_canary:
+    name: Deploy Canary
+    runs-on: ubuntu-latest
+    environment:
+      name: "canary"
+    steps:
+      - name: hello world
+        run: echo "Hello, world!"
